@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="102" fill="#004b8c"/>
+
+  <!-- Chat bubble -->
+  <path d="M380 120
+           C410 120 440 150 440 180
+           L440 300
+           C440 330 410 360 380 360
+           L200 360
+           L140 420
+           L140 360
+           L132 360
+           C102 360 72 330 72 300
+           L72 180
+           C72 150 102 120 132 120
+           Z"
+        fill="white"/>
+
+  <!-- AI face - eyes -->
+  <circle cx="190" cy="220" r="24" fill="#004b8c"/>
+  <circle cx="322" cy="220" r="24" fill="#004b8c"/>
+
+  <!-- AI face - eye highlights -->
+  <circle cx="198" cy="212" r="8" fill="white"/>
+  <circle cx="330" cy="212" r="8" fill="white"/>
+
+  <!-- AI face - smile -->
+  <path d="M200 280 Q256 330 312 280"
+        fill="none"
+        stroke="#004b8c"
+        stroke-width="16"
+        stroke-linecap="round"/>
+
+  <!-- Sound wave accent (top right) -->
+  <path d="M420 80 C445 100 445 140 420 160"
+        fill="none" stroke="white" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <path d="M445 60 C480 90 480 150 445 180"
+        fill="none" stroke="white" stroke-width="8" stroke-linecap="round" opacity="0.3"/>
+</svg>

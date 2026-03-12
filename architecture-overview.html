@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Trainer - System Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 40px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+        h2 {
+            text-align: center;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        .architecture-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Layer styles */
+        .layer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .layer-label {
+            position: absolute;
+            left: 0;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Component boxes */
+        .component {
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            min-width: 140px;
+            position: relative;
+        }
+
+        .component-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .component-items {
+            font-size: 11px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        /* Color schemes */
+        .users { background: linear-gradient(135deg, #78909c, #546e7a); }
+        .frontend { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .backend { background: linear-gradient(135deg, #4caf50, #388e3c); }
+        .ai-services { background: linear-gradient(135deg, #9c27b0, #7b1fa2); }
+        .voice-avatar { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .data { background: linear-gradient(135deg, #f44336, #d32f2f); }
+        .auth { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .infra { background: linear-gradient(135deg, #607d8b, #455a64); }
+        .analytics { background: linear-gradient(135deg, #e91e63, #c2185b); }
+
+        /* Section dividers */
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* Arrows */
+        .arrow-down {
+            text-align: center;
+            font-size: 24px;
+            color: #ccc;
+            margin: 15px 0;
+        }
+
+        .arrow-bidirectional {
+            text-align: center;
+            font-size: 20px;
+            color: #999;
+            margin: 10px 0;
+        }
+
+        /* Data flow */
+        .data-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .flow-arrow {
+            color: #999;
+            font-size: 20px;
+        }
+
+        .flow-label {
+            font-size: 10px;
+            color: #666;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        /* Connection lines */
+        .connections {
+            position: relative;
+            height: 40px;
+        }
+
+        .connection-line {
+            position: absolute;
+            border: 2px dashed #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .layer {
+                flex-direction: column;
+                align-items: center;
+            }
+            .component {
+                width: 80%;
+            }
+        }
+
+        .sub-section {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .component-group {
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .group-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Sales Trainer - System Architecture</h1>
+    <h2>Connect & Discover Training Platform | Technical Overview</h2>
+
+    <div class="architecture-container">
+
+        <!-- Users Layer -->
+        <div class="section">
+            <div class="section-title">Users</div>
+            <div class="layer">
+                <div class="component users">
+                    <div class="component-title">Sales Professionals</div>
+                    <div class="component-items">
+                        Training Sessions<br>
+                        Self-Evaluation<br>
+                        View Feedback
+                    </div>
+                </div>
+                <div class="component users">
+                    <div class="component-title">Administrators</div>
+                    <div class="component-items">
+                        Analytics Dashboard<br>
+                        Usage Reports<br>
+                        Performance Trends
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <!-- Authentication Layer -->
+        <div class="section">
+            <div class="section-title">Authentication</div>
+            <div class="layer">
+                <div class="component auth">
+                    <div class="component-title">SAML SSO</div>
+                    <div class="component-items">
+                        Sleep Number Identity Provider<br>
+                        User Profile & Roles<br>
+                        Session Management
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <!-- Frontend Layer -->
+        <div class="section">
+            <div class="section-title">Frontend (Web Application)</div>
+            <div class="sub-section">
+                <div class="component-group">
+                    <span class="group-label">User Screens</span>
+                    <div class="component frontend">
+                        <div class="component-title">Home Page</div>
+                        <div class="component-items">
+                            Welcome Message<br>
+                            User Stats<br>
+                            Session History
+                        </div>
+                    </div>
+                    <div class="component frontend">
+                        <div class="component-title">Persona Selection</div>
+                        <div class="component-items">
+                            DISC Personas<br>
+                            Marketing Sub-Personas<br>
+                            Random Option
+                        </div>
+                    </div>
+                    <div class="component frontend">
+                        <div class="component-title">Training Session</div>
+                        <div class="component-items">
+                            AI Avatar Display<br>
+                            Voice Controls<br>
+                            Timer & Controls
+                        </div>
+                    </div>
+                    <div class="component frontend">
+                        <div class="component-title">Evaluation & Results</div>
+                        <div class="component-items">
+                            Self-Eval Form<br>
+                            AI Feedback<br>
+                            Replay Session
+                        </div>
+                    </div>
+                </div>
+                <div class="component-group">
+                    <span class="group-label">Admin Screens</span>
+                    <div class="component analytics">
+                        <div class="component-title">Analytics Dashboard</div>
+                        <div class="component-items">
+                            Real-Time Metrics<br>
+                            Usage Charts<br>
+                            Persona Distribution<br>
+                            Performance Trends
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-bidirectional">▲▼</div>
+
+        <!-- Backend Layer -->
+        <div class="section">
+            <div class="section-title">Backend (API Layer)</div>
+            <div class="layer">
+                <div class="component backend">
+                    <div class="component-title">User Service</div>
+                    <div class="component-items">
+                        Profile Management<br>
+                        Stats Calculation<br>
+                        Session History
+                    </div>
+                </div>
+                <div class="component backend">
+                    <div class="component-title">Session Service</div>
+                    <div class="component-items">
+                        Session Lifecycle<br>
+                        Recording Storage<br>
+                        Timer Management
+                    </div>
+                </div>
+                <div class="component backend">
+                    <div class="component-title">Evaluation Service</div>
+                    <div class="component-items">
+                        Self-Eval Storage<br>
+                        AI Feedback Trigger<br>
+                        Results Aggregation
+                    </div>
+                </div>
+                <div class="component backend">
+                    <div class="component-title">Analytics Service</div>
+                    <div class="component-items">
+                        Metrics Calculation<br>
+                        Real-Time Updates<br>
+                        Report Generation
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-bidirectional">▲▼</div>
+
+        <!-- AI & Voice Services Layer -->
+        <div class="section">
+            <div class="section-title">AI & Avatar Services</div>
+            <div class="sub-section">
+                <div class="component-group">
+                    <span class="group-label">AI Engine</span>
+                    <div class="component ai-services">
+                        <div class="component-title">Claude (Azure AI Foundry)</div>
+                        <div class="component-items">
+                            Conversation Engine<br>
+                            Persona Behavior<br>
+                            Session Evaluation
+                        </div>
+                    </div>
+                    <div class="component ai-services">
+                        <div class="component-title">System Prompts</div>
+                        <div class="component-items">
+                            AI Persona Behavior Prompt<br>
+                            Session Evaluation Prompt<br>
+                            Connect & Discover Criteria
+                        </div>
+                    </div>
+                </div>
+                <div class="component-group">
+                    <span class="group-label">Avatar</span>
+                    <div class="component voice-avatar">
+                        <div class="component-title">Avatar Engine</div>
+                        <div class="component-items">
+                            Realistic Avatars<br>
+                            Lip Sync<br>
+                            Voice Integration<br>
+                            Persona Variations
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-bidirectional">▲▼</div>
+
+        <!-- Data Layer -->
+        <div class="section">
+            <div class="section-title">Data Layer</div>
+            <div class="layer">
+                <div class="component data">
+                    <div class="component-title">User Database</div>
+                    <div class="component-items">
+                        User Profiles<br>
+                        Preferences<br>
+                        Admin Flags
+                    </div>
+                </div>
+                <div class="component data">
+                    <div class="component-title">Session Database</div>
+                    <div class="component-items">
+                        Session Records<br>
+                        Transcripts<br>
+                        Persona Selections
+                    </div>
+                </div>
+                <div class="component data">
+                    <div class="component-title">Evaluation Database</div>
+                    <div class="component-items">
+                        Self-Evaluations<br>
+                        AI Feedback<br>
+                        Strengths/Improvements
+                    </div>
+                </div>
+                <div class="component data">
+                    <div class="component-title">Media Storage</div>
+                    <div class="component-items">
+                        Session Recordings<br>
+                        Audio Files<br>
+                        Replay Data
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow-down">▼</div>
+
+        <!-- Infrastructure Layer -->
+        <div class="section">
+            <div class="section-title">Infrastructure (Azure)</div>
+            <div class="layer">
+                <div class="component infra">
+                    <div class="component-title">Azure App Service</div>
+                    <div class="component-items">
+                        Web Hosting<br>
+                        Auto-Scaling<br>
+                        SSL/TLS
+                    </div>
+                </div>
+                <div class="component infra">
+                    <div class="component-title">Azure Cosmos DB / SQL</div>
+                    <div class="component-items">
+                        Document Storage<br>
+                        Relational Data<br>
+                        Global Distribution
+                    </div>
+                </div>
+                <div class="component infra">
+                    <div class="component-title">Azure Blob Storage</div>
+                    <div class="component-items">
+                        Media Files<br>
+                        Session Recordings<br>
+                        Static Assets
+                    </div>
+                </div>
+                <div class="component infra">
+                    <div class="component-title">Azure AI Foundry</div>
+                    <div class="component-items">
+                        Claude API Access<br>
+                        Model Deployment<br>
+                        API Management
+                    </div>
+                </div>
+                <div class="component infra">
+                    <div class="component-title">Azure Monitor</div>
+                    <div class="component-items">
+                        Logging<br>
+                        Metrics<br>
+                        Alerts
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #78909c, #546e7a);"></div>
+                <span>Users</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #00bcd4, #0097a7);"></div>
+                <span>Authentication</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #2196f3, #1976d2);"></div>
+                <span>Frontend</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #e91e63, #c2185b);"></div>
+                <span>Analytics</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #4caf50, #388e3c);"></div>
+                <span>Backend</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #9c27b0, #7b1fa2);"></div>
+                <span>AI Services</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #ff9800, #f57c00);"></div>
+                <span>Avatar Engine</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f44336, #d32f2f);"></div>
+                <span>Data Layer</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #607d8b, #455a64);"></div>
+                <span>Infrastructure</span>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

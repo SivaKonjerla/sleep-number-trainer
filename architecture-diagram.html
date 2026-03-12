@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Trainer - Architecture Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        h2 {
+            text-align: center;
+            color: #666;
+            font-weight: normal;
+            margin-top: 0;
+        }
+        .mermaid {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Sales Trainer MVP</h1>
+    <h2>Step 1: Connect & Discover - System Architecture</h2>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph AUTH["🔐 AUTHENTICATION"]
+        A1[Sign In Page] --> A2[Azure AD SSO]
+        A2 --> A3[User Profile]
+    end
+
+    subgraph UI["🖥️ USER INTERFACE"]
+        U1[Dashboard]
+        U2[View Last 10 Sessions]
+        U3[Persona Selection]
+        U4[Session Screen + Avatar]
+        U5[Evaluation Screen]
+    end
+
+    subgraph AI["🤖 AI ENGINE"]
+        AI1[Behavioral Persona<br/>Director / Relator /<br/>Socializer / Thinker]
+        AI2[Marketing Personas<br/>Skeptical / Budget /<br/>Luxury Seeker]
+        AI3[System Prompt Generator]
+        AI4[Claude via Azure AI Foundry]
+    end
+
+    subgraph DATA["💾 DATA LAYER"]
+        D1[(User Database)]
+        D2[(Session Store)]
+        D3[(Evaluation Store)]
+    end
+
+    subgraph EVAL["📊 EVALUATION"]
+        E1{Session End<br/>Trigger}
+        E2[Self-Evaluation<br/>Optional]
+        E3[AI Evaluation]
+        E4[Feedback Report]
+    end
+
+    A3 --> U1
+    U1 --> U2
+    U1 --> U3
+
+    U3 --> AI1
+    AI1 --> AI2
+    AI2 --> AI3
+    AI3 --> AI4
+
+    AI4 --> U4
+    U4 --> E1
+
+    E1 -->|User Clicks End| E2
+    E1 -->|AI Complete| E2
+    E1 -->|Time Limit| E2
+
+    E2 -->|Submit or Skip| E3
+    E3 --> E4
+    E4 --> U5
+
+    U5 -->|New Session| U3
+    U5 -->|View Details| E4
+    U5 -->|Back| U1
+
+    U4 -.->|Save Transcript| D2
+    E2 -.->|Save| D3
+    E3 -.->|Save| D3
+    U2 -.->|Fetch| D2
+    A3 -.->|Fetch/Save| D1
+
+    style AUTH fill:#e3f2fd,stroke:#1976d2
+    style UI fill:#e8f5e9,stroke:#388e3c
+    style AI fill:#f3e5f5,stroke:#7b1fa2
+    style DATA fill:#fff3e0,stroke:#f57c00
+    style EVAL fill:#fce4ec,stroke:#c2185b
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Trainer - Fishbone Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        h1 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-size: 28px;
+        }
+        h2 {
+            text-align: center;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        .fishbone-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            height: 700px;
+        }
+
+        /* Main spine */
+        .spine {
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1976d2, #1976d2 95%, #0d47a1);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        /* Fish head */
+        .head {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, #1976d2, #0d47a1);
+            border-radius: 0 60px 60px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            padding: 15px;
+            line-height: 1.4;
+            box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+            z-index: 2;
+        }
+
+        /* Bone groups */
+        .bone {
+            position: absolute;
+            z-index: 3;
+        }
+
+        .bone-line {
+            position: absolute;
+            height: 4px;
+            background: #666;
+            transform-origin: right center;
+        }
+
+        .bone-line.top {
+            transform: rotate(-35deg);
+        }
+
+        .bone-line.bottom {
+            transform: rotate(35deg);
+        }
+
+        /* Category boxes */
+        .category {
+            position: absolute;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            min-width: 140px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Sub-items */
+        .sub-items {
+            position: absolute;
+            list-style: none;
+            font-size: 11px;
+            color: #333;
+        }
+
+        .sub-items li {
+            background: white;
+            padding: 6px 10px;
+            margin: 4px 0;
+            border-radius: 4px;
+            border-left: 3px solid;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            white-space: nowrap;
+        }
+
+        /* Colors for each category */
+        .auth { background: linear-gradient(135deg, #1976d2, #1565c0); }
+        .auth-border { border-color: #1976d2; }
+
+        .ui { background: linear-gradient(135deg, #388e3c, #2e7d32); }
+        .ui-border { border-color: #388e3c; }
+
+        .ai { background: linear-gradient(135deg, #7b1fa2, #6a1b9a); }
+        .ai-border { border-color: #7b1fa2; }
+
+        .data { background: linear-gradient(135deg, #f57c00, #ef6c00); }
+        .data-border { border-color: #f57c00; }
+
+        .eval { background: linear-gradient(135deg, #c2185b, #ad1457); }
+        .eval-border { border-color: #c2185b; }
+
+        .infra { background: linear-gradient(135deg, #455a64, #37474f); }
+        .infra-border { border-color: #455a64; }
+
+        .analytics { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .analytics-border { border-color: #00bcd4; }
+
+        /* Diagonal lines using SVG */
+        .bones-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Category positions - TOP bones */
+        .cat-auth {
+            left: 80px;
+            top: 80px;
+        }
+        .items-auth {
+            left: 60px;
+            top: 130px;
+        }
+
+        .cat-ui {
+            left: 320px;
+            top: 60px;
+        }
+        .items-ui {
+            left: 300px;
+            top: 110px;
+        }
+
+        .cat-ai {
+            left: 580px;
+            top: 80px;
+        }
+        .items-ai {
+            left: 560px;
+            top: 130px;
+        }
+
+        /* Category positions - BOTTOM bones */
+        .cat-data {
+            left: 80px;
+            bottom: 100px;
+        }
+        .items-data {
+            left: 60px;
+            bottom: 150px;
+        }
+
+        .cat-eval {
+            left: 320px;
+            bottom: 80px;
+        }
+        .items-eval {
+            left: 300px;
+            bottom: 130px;
+        }
+
+        .cat-infra {
+            left: 580px;
+            bottom: 100px;
+        }
+        .items-infra {
+            left: 560px;
+            bottom: 150px;
+        }
+
+        .cat-analytics {
+            left: 820px;
+            top: 80px;
+        }
+        .items-analytics {
+            left: 800px;
+            top: 130px;
+        }
+
+        .flow-label {
+            position: absolute;
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Sales Trainer MVP - Architecture</h1>
+    <h2>Step 1: Connect & Discover | Fishbone Diagram</h2>
+
+    <div class="fishbone-container">
+        <!-- SVG for bone lines -->
+        <svg class="bones-svg" viewBox="0 0 1400 700" preserveAspectRatio="xMidYMid meet">
+            <!-- Main spine -->
+            <line x1="50" y1="350" x2="1220" y2="350" stroke="#1976d2" stroke-width="6"/>
+
+            <!-- Top bones -->
+            <line x1="150" y1="350" x2="150" y2="180" stroke="#1976d2" stroke-width="3"/>
+            <line x1="150" y1="180" x2="80" y2="120" stroke="#1976d2" stroke-width="3"/>
+
+            <line x1="380" y1="350" x2="380" y2="160" stroke="#388e3c" stroke-width="3"/>
+            <line x1="380" y1="160" x2="310" y2="100" stroke="#388e3c" stroke-width="3"/>
+
+            <line x1="640" y1="350" x2="640" y2="180" stroke="#7b1fa2" stroke-width="3"/>
+            <line x1="640" y1="180" x2="570" y2="120" stroke="#7b1fa2" stroke-width="3"/>
+
+            <!-- Analytics bone (top) -->
+            <line x1="880" y1="350" x2="880" y2="180" stroke="#00bcd4" stroke-width="3"/>
+            <line x1="880" y1="180" x2="810" y2="120" stroke="#00bcd4" stroke-width="3"/>
+
+            <!-- Bottom bones -->
+            <line x1="150" y1="350" x2="150" y2="520" stroke="#f57c00" stroke-width="3"/>
+            <line x1="150" y1="520" x2="80" y2="580" stroke="#f57c00" stroke-width="3"/>
+
+            <line x1="380" y1="350" x2="380" y2="540" stroke="#c2185b" stroke-width="3"/>
+            <line x1="380" y1="540" x2="310" y2="600" stroke="#c2185b" stroke-width="3"/>
+
+            <line x1="640" y1="350" x2="640" y2="520" stroke="#455a64" stroke-width="3"/>
+            <line x1="640" y1="520" x2="570" y2="580" stroke="#455a64" stroke-width="3"/>
+
+            <!-- Arrow head -->
+            <polygon points="1220,350 1200,340 1200,360" fill="#1976d2"/>
+        </svg>
+
+        <!-- Fish Head (Outcome) -->
+        <div class="head">
+            COMPLETED<br>TRAINING<br>SESSION
+        </div>
+
+        <!-- TOP CATEGORIES -->
+
+        <!-- Authentication -->
+        <div class="category auth cat-auth">
+            🔐 AUTHENTICATION
+        </div>
+        <ul class="sub-items items-auth">
+            <li class="auth-border">Sign In Page</li>
+            <li class="auth-border">Azure AD SSO</li>
+            <li class="auth-border">User Profile</li>
+        </ul>
+
+        <!-- User Interface -->
+        <div class="category ui cat-ui">
+            🖥️ USER INTERFACE
+        </div>
+        <ul class="sub-items items-ui">
+            <li class="ui-border">Dashboard</li>
+            <li class="ui-border">Last 10 Sessions</li>
+            <li class="ui-border">Persona Selection</li>
+            <li class="ui-border">Session Screen + Avatar</li>
+            <li class="ui-border">Evaluation Screen</li>
+        </ul>
+
+        <!-- AI Engine -->
+        <div class="category ai cat-ai">
+            🤖 AI ENGINE
+        </div>
+        <ul class="sub-items items-ai">
+            <li class="ai-border">Behavioral Personas</li>
+            <li class="ai-border">Marketing Personas</li>
+            <li class="ai-border">System Prompt Generator</li>
+            <li class="ai-border">Claude (Azure AI Foundry)</li>
+        </ul>
+
+        <!-- Analytics (Admin) -->
+        <div class="category analytics cat-analytics">
+            📈 ANALYTICS
+        </div>
+        <ul class="sub-items items-analytics">
+            <li class="analytics-border">Admin Dashboard</li>
+            <li class="analytics-border">Usage Metrics</li>
+            <li class="analytics-border">Persona Distribution</li>
+            <li class="analytics-border">Performance Trends</li>
+        </ul>
+
+        <!-- BOTTOM CATEGORIES -->
+
+        <!-- Data Layer -->
+        <div class="category data cat-data">
+            💾 DATA LAYER
+        </div>
+        <ul class="sub-items items-data">
+            <li class="data-border">User Database</li>
+            <li class="data-border">Session Store</li>
+            <li class="data-border">Evaluation Store</li>
+        </ul>
+
+        <!-- Evaluation -->
+        <div class="category eval cat-eval">
+            📊 EVALUATION
+        </div>
+        <ul class="sub-items items-eval">
+            <li class="eval-border">Session End Triggers</li>
+            <li class="eval-border">Self-Evaluation (Optional)</li>
+            <li class="eval-border">AI Evaluation</li>
+            <li class="eval-border">Feedback Report</li>
+        </ul>
+
+        <!-- Infrastructure -->
+        <div class="category infra cat-infra">
+            ☁️ INFRASTRUCTURE
+        </div>
+        <ul class="sub-items items-infra">
+            <li class="infra-border">Azure App Service</li>
+            <li class="infra-border">Azure AD Tenant</li>
+            <li class="infra-border">Azure AI Foundry</li>
+            <li class="infra-border">Database (Cosmos/SQL)</li>
+        </ul>
+
+    </div>
+</body>
+</html>

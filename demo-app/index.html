@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Trainer - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .nav-user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4299e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        /* Screen Container */
+        .screen {
+            display: none;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a365d;
+            margin-bottom: 15px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        /* HOME SCREEN */
+        .welcome-banner {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c5282;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .sessions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .session-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .session-item:hover {
+            background: #edf2f7;
+            transform: translateX(5px);
+        }
+
+        .session-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .session-meta {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .session-duration {
+            font-size: 14px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* PERSONA SELECTION */
+        .persona-section {
+            margin-bottom: 30px;
+        }
+
+        .persona-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .persona-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .persona-card:hover {
+            border-color: #4299e1;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+        }
+
+        .persona-card.selected {
+            border-color: #3182ce;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        }
+
+        .persona-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .persona-card.selected .persona-icon {
+            background: #3182ce;
+        }
+
+        .persona-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .persona-desc {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* TRAINING SESSION */
+        .training-container {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 25px;
+            height: calc(100vh - 180px);
+        }
+
+        .avatar-section {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-placeholder {
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .avatar-placeholder img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-emoji {
+            font-size: 120px;
+        }
+
+        .avatar-name {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .avatar-speaking {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .timer.warning {
+            background: #e53e3e;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .control-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #edf2f7;
+            color: #4a5568;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .control-btn.active {
+            background: #3182ce;
+            color: white;
+        }
+
+        .control-btn.danger:hover {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .control-btn-icon {
+            font-size: 20px;
+        }
+
+        .transcript {
+            flex: 1;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .transcript-line {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .transcript-line.ai {
+            background: #e2e8f0;
+            margin-right: 30px;
+        }
+
+        .transcript-line.user {
+            background: #bee3f8;
+            margin-left: 30px;
+        }
+
+        .transcript-speaker {
+            font-size: 11px;
+            font-weight: 600;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .transcript-text {
+            font-size: 14px;
+            color: #2d3748;
+        }
+
+        /* SELF EVALUATION */
+        .eval-form {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .eval-question {
+            margin-bottom: 25px;
+        }
+
+        .eval-question-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .eval-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .eval-option {
+            padding: 12px 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .eval-option:hover {
+            border-color: #4299e1;
+        }
+
+        .eval-option.selected {
+            border-color: #3182ce;
+            background: #ebf8ff;
+        }
+
+        .eval-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .eval-textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+        }
+
+        .eval-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* RESULTS */
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #38a169, #2f855a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+        }
+
+        .results-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 10px;
+        }
+
+        .results-duration {
+            font-size: 18px;
+            color: #718096;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .feedback-card.strengths {
+            border-left: 4px solid #38a169;
+        }
+
+        .feedback-card.improvements {
+            border-left: 4px solid #dd6b20;
+        }
+
+        .feedback-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-title.strengths { color: #38a169; }
+        .feedback-title.improvements { color: #dd6b20; }
+
+        .feedback-list {
+            list-style: none;
+        }
+
+        .feedback-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 14px;
+            color: #4a5568;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .feedback-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-bullet {
+            margin-top: 3px;
+        }
+
+        .ai-feedback {
+            background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .ai-feedback-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-feedback-text {
+            font-size: 15px;
+            color: #2d3748;
+            line-height: 1.7;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* ANALYTICS */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .analytics-card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c5282;
+        }
+
+        .analytics-card-label {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .analytics-card-change {
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .analytics-card-change.positive {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .analytics-card-change.negative {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .chart-placeholder {
+            background: #f7fafc;
+            border-radius: 8px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+            font-size: 14px;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* Demo badge */
+        .demo-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2c5282;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        /* Volume slider */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3182ce;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-logo">
+            <div class="nav-logo-icon">🎯</div>
+            AI Sales Trainer
+        </div>
+        <div class="nav-links">
+            <a class="nav-link active" onclick="showScreen('home')">Home</a>
+            <a class="nav-link" onclick="showScreen('analytics')">Analytics</a>
+        </div>
+        <div class="nav-user">
+            <span>John Smith</span>
+            <div class="nav-user-avatar">JS</div>
+        </div>
+    </nav>
+
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+        <div class="welcome-banner">
+            <div class="welcome-title">Welcome back, John!</div>
+            <div class="welcome-subtitle">Ready to sharpen your Connect & Discover skills today?</div>
+            <button class="btn btn-primary" onclick="showScreen('persona')">Start New Training Session</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Total Sessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">11:32</div>
+                <div class="stat-label">Avg Duration</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">Feb 24</div>
+                <div class="stat-label">Last Session</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Recent Sessions</div>
+            <div class="sessions-list">
+                <div class="session-item" onclick="showScreen('results')">
+                    <div class="session-icon">🎭</div>
+                    <div class="session-info">
+                        <div class="session-title">Director + Budget Conscious</div>
+                        <div class="session-meta">Feb 24, 2026 at 2:30 PM • Strong discovery questions</div>
+                    </div>
+                    <div class="session-duration">12:45</div>
+                </div>
+                <div class="session-item">
+                    <div class="session-icon">🎭</div>
+                    <div class="session-info">
+                        <div class="session-title">Socializer + Luxury Seeker</div>
+                        <div class="session-meta">Feb 22, 2026 at 10:15 AM • Good rapport building</div>
+                    </div>
+                    <div class="session-duration">14:20</div>
+                </div>
+                <div class="session-item">
+                    <div class="session-icon">🎭</div>
+                    <div class="session-info">
+                        <div class="session-title">Thinker + Skeptical</div>
+                        <div class="session-meta">Feb 20, 2026 at 3:45 PM • Handled objections well</div>
+                    </div>
+                    <div class="session-duration">13:10</div>
+                </div>
+                <div class="session-item">
+                    <div class="session-icon">🎭</div>
+                    <div class="session-info">
+                        <div class="session-title">Realter + Budget Conscious</div>
+                        <div class="session-meta">Feb 18, 2026 at 11:00 AM • Empathetic approach</div>
+                    </div>
+                    <div class="session-duration">10:55</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PERSONA SELECTION SCREEN -->
+    <div id="screen-persona" class="screen">
+        <div class="card">
+            <div class="card-title">Select Customer Persona</div>
+            <p style="color: #718096; margin-bottom: 25px;">Choose a DISC personality type and marketing persona for your training session.</p>
+
+            <div class="persona-section">
+                <div class="persona-section-title">DISC Personality Type</div>
+                <div class="persona-grid">
+                    <div class="persona-card selected" onclick="selectPersona(this, 'disc')">
+                        <div class="persona-icon">🎲</div>
+                        <div class="persona-name">Random</div>
+                        <div class="persona-desc">Surprise me!</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'disc')">
+                        <div class="persona-icon">👔</div>
+                        <div class="persona-name">Director</div>
+                        <div class="persona-desc">Decisive, direct, results-oriented</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'disc')">
+                        <div class="persona-icon">🤝</div>
+                        <div class="persona-name">Realter</div>
+                        <div class="persona-desc">Supportive, patient, team-focused</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'disc')">
+                        <div class="persona-icon">🎉</div>
+                        <div class="persona-name">Socializer</div>
+                        <div class="persona-desc">Enthusiastic, optimistic, social</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'disc')">
+                        <div class="persona-icon">🔍</div>
+                        <div class="persona-name">Thinker</div>
+                        <div class="persona-desc">Analytical, precise, detail-oriented</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="persona-section">
+                <div class="persona-section-title">Marketing Persona</div>
+                <div class="persona-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="persona-card selected" onclick="selectPersona(this, 'marketing')">
+                        <div class="persona-icon">🎲</div>
+                        <div class="persona-name">Random</div>
+                        <div class="persona-desc">Surprise me!</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'marketing')">
+                        <div class="persona-icon">🤨</div>
+                        <div class="persona-name">Skeptical</div>
+                        <div class="persona-desc">Needs proof and evidence</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'marketing')">
+                        <div class="persona-icon">💰</div>
+                        <div class="persona-name">Budget Conscious</div>
+                        <div class="persona-desc">Value-focused buyer</div>
+                    </div>
+                    <div class="persona-card" onclick="selectPersona(this, 'marketing')">
+                        <div class="persona-icon">✨</div>
+                        <div class="persona-name">Luxury Seeker</div>
+                        <div class="persona-desc">Premium experience</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button class="btn btn-secondary" onclick="showScreen('home')">Cancel</button>
+                <button class="btn btn-primary" onclick="showScreen('training')">Begin Training Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAINING SESSION SCREEN -->
+    <div id="screen-training" class="screen">
+        <div class="training-container">
+            <div class="avatar-section">
+                <div class="timer" id="timer">14:32</div>
+                <div class="avatar-placeholder">
+                    <span class="avatar-emoji">👩‍💼</span>
+                </div>
+                <div class="avatar-name">Sarah Mitchell</div>
+                <div class="avatar-speaking">Customer • Socializer + Budget Conscious</div>
+            </div>
+
+            <div class="controls-section">
+                <div class="control-card">
+                    <div class="control-title">Session Controls</div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="toggleControl(this)">
+                            <span class="control-btn-icon">⏸️</span>
+                            Pause
+                        </button>
+                        <button class="control-btn danger" onclick="showScreen('evaluation')">
+                            <span class="control-btn-icon">⏹️</span>
+                            End
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-card">
+                    <div class="control-title">Audio Controls</div>
+                    <div class="control-buttons">
+                        <button class="control-btn" onclick="toggleControl(this)">
+                            <span class="control-btn-icon">🎤</span>
+                            Mute
+                        </button>
+                    </div>
+                    <div class="volume-control">
+                        <span>🔊</span>
+                        <input type="range" class="volume-slider" min="0" max="100" value="75">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SELF EVALUATION SCREEN -->
+    <div id="screen-evaluation" class="screen">
+        <div class="eval-form">
+            <div class="card">
+                <div class="card-title">Self-Evaluation</div>
+                <p style="color: #718096; margin-bottom: 30px;">Take a moment to reflect on your training session.</p>
+
+                <div class="eval-question">
+                    <div class="eval-question-label">What was the toughest part of the session?</div>
+                    <textarea class="eval-textarea" placeholder="Describe the most challenging moment..."></textarea>
+                </div>
+
+                <div class="eval-question">
+                    <div class="eval-question-label">What do you think you could have done better?</div>
+                    <textarea class="eval-textarea" placeholder="Reflect on areas for improvement..."></textarea>
+                </div>
+
+                <div class="eval-buttons">
+                    <button class="btn btn-secondary" onclick="showScreen('results')">Skip</button>
+                    <button class="btn btn-primary" onclick="showScreen('results')">Submit Evaluation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="screen-results" class="screen">
+        <div class="results-header">
+            <div class="results-icon">✓</div>
+            <div class="results-title">Session Complete!</div>
+            <div class="results-duration">Duration: 12 minutes 45 seconds</div>
+        </div>
+
+        <div class="ai-feedback">
+            <div class="ai-feedback-title">
+                <span>🤖</span> AI Coach Feedback
+            </div>
+            <div class="ai-feedback-text">
+                Great session, John! You demonstrated strong Connect skills by acknowledging Sarah's friend recommendation and showing genuine interest in her needs. Your discovery question about what made her start looking was excellent - it opened up the conversation naturally. When she mentioned back pain and budget concerns, you had an opportunity to dig deeper into her sleep challenges before addressing the value proposition. Keep building on your empathetic approach!
+            </div>
+        </div>
+
+        <div class="results-grid">
+            <div class="feedback-card strengths">
+                <div class="feedback-title strengths">
+                    <span>💪</span> Strengths
+                </div>
+                <ul class="feedback-list">
+                    <li><span class="feedback-bullet">✓</span> Warm, welcoming greeting that built rapport</li>
+                    <li><span class="feedback-bullet">✓</span> Open-ended discovery questions</li>
+                    <li><span class="feedback-bullet">✓</span> Acknowledged customer's referral source</li>
+                    <li><span class="feedback-bullet">✓</span> Active listening demonstrated</li>
+                </ul>
+            </div>
+            <div class="feedback-card improvements">
+                <div class="feedback-title improvements">
+                    <span>🎯</span> Areas to Improve
+                </div>
+                <ul class="feedback-list">
+                    <li><span class="feedback-bullet">→</span> Explore pain points deeper before solutions</li>
+                    <li><span class="feedback-bullet">→</span> Ask about sleep partner's needs</li>
+                    <li><span class="feedback-bullet">→</span> Address budget concerns with value framing</li>
+                    <li><span class="feedback-bullet">→</span> Use more reflective listening techniques</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="results-actions">
+            <button class="btn btn-secondary" onclick="alert('Replay functionality coming soon!')">
+                🔄 Replay Session
+            </button>
+            <button class="btn btn-primary" onclick="showScreen('home')">
+                Return to Home
+            </button>
+        </div>
+    </div>
+
+    <!-- ANALYTICS SCREEN (Admin) -->
+    <div id="screen-analytics" class="screen">
+        <h2 style="margin-bottom: 25px; color: #1a365d;">Analytics Dashboard</h2>
+
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-card-value">1,247</div>
+                <div class="analytics-card-label">Total Users</div>
+                <div class="analytics-card-change positive">↑ 12% this month</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-card-value">8,432</div>
+                <div class="analytics-card-label">Total Sessions</div>
+                <div class="analytics-card-change positive">↑ 23% this month</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-card-value">87%</div>
+                <div class="analytics-card-label">Completion Rate</div>
+                <div class="analytics-card-change positive">↑ 5% this month</div>
+            </div>
+            <div class="analytics-card">
+                <div class="analytics-card-value">11:24</div>
+                <div class="analytics-card-label">Avg Duration</div>
+                <div class="analytics-card-change negative">↓ 2% this month</div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="card">
+                <div class="card-title">Sessions by DISC Type</div>
+                <div class="chart-placeholder">
+                    📊 DISC Distribution Chart<br><br>
+                    Director: 28% | Realter: 22%<br>
+                    Socializer: 31% | Thinker: 19%
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Sessions by Marketing Persona</div>
+                <div class="chart-placeholder">
+                    📊 Marketing Persona Chart<br><br>
+                    Skeptical: 35% | Budget Conscious: 40%<br>
+                    Luxury Seeker: 25%
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Performance Trends</div>
+            <div class="chart-placeholder" style="height: 200px;">
+                📈 User Improvement Over Time Chart<br><br>
+                Showing average feedback scores improving over multiple sessions
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Self-Evaluation Metrics</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; padding: 20px 0;">
+                <div>
+                    <div style="font-size: 28px; font-weight: 700; color: #38a169;">76%</div>
+                    <div style="color: #718096; font-size: 14px;">Self-Eval Submission Rate</div>
+                </div>
+                <div>
+                    <div style="font-size: 28px; font-weight: 700; color: #3182ce;">4.2</div>
+                    <div style="color: #718096; font-size: 14px;">Avg Sessions per User</div>
+                </div>
+                <div>
+                    <div style="font-size: 28px; font-weight: 700; color: #805ad5;">68%</div>
+                    <div style="color: #718096; font-size: 14px;">Users Showing Improvement</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Badge -->
+    <div class="demo-badge">
+        🎨 Interactive Demo
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show selected screen
+            document.getElementById('screen-' + screenId).classList.add('active');
+
+            // Update nav
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            if (screenId === 'home') {
+                document.querySelector('.nav-link:nth-child(1)').classList.add('active');
+            } else if (screenId === 'analytics') {
+                document.querySelector('.nav-link:nth-child(2)').classList.add('active');
+            }
+        }
+
+        function selectPersona(element, type) {
+            // Remove selection from siblings
+            const parent = element.parentElement;
+            parent.querySelectorAll('.persona-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked element
+            element.classList.add('selected');
+        }
+
+        function toggleControl(element) {
+            element.classList.toggle('active');
+        }
+
+        // Simulate timer countdown
+        let timerMinutes = 14;
+        let timerSeconds = 32;
+
+        setInterval(() => {
+            const timerElement = document.getElementById('timer');
+            if (timerElement && document.getElementById('screen-training').classList.contains('active')) {
+                timerSeconds--;
+                if (timerSeconds < 0) {
+                    timerSeconds = 59;
+                    timerMinutes--;
+                }
+                if (timerMinutes < 0) {
+                    timerMinutes = 0;
+                    timerSeconds = 0;
+                }
+
+                const display = `${timerMinutes}:${timerSeconds.toString().padStart(2, '0')}`;
+                timerElement.textContent = display;
+
+                if (timerMinutes < 2) {
+                    timerElement.classList.add('warning');
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
