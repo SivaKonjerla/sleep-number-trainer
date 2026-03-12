@@ -952,7 +952,7 @@
                     <span class="avatar-emoji">👩‍💼</span>
                 </div>
                 <div class="avatar-name">Sarah Mitchell</div>
-                <div class="avatar-speaking">Customer • Socializer + Budget Conscious</div>
+                <div class="avatar-speaking" id="persona-display">Customer • Random + Random</div>
             </div>
 
             <div class="controls-section">
@@ -1144,6 +1144,10 @@
     </div>
 
     <script>
+        // Track selected personas
+        let selectedDisc = 'Random';
+        let selectedMarketing = 'Random';
+
         function showScreen(screenId) {
             // Hide all screens
             document.querySelectorAll('.screen').forEach(screen => {
@@ -1163,6 +1167,12 @@
             } else if (screenId === 'analytics') {
                 document.querySelector('.nav-link:nth-child(2)').classList.add('active');
             }
+
+            // Update persona display when entering training screen
+            if (screenId === 'training') {
+                document.getElementById('persona-display').textContent =
+                    'Customer • ' + selectedDisc + ' + ' + selectedMarketing;
+            }
         }
 
         function selectPersona(element, type) {
@@ -1174,6 +1184,14 @@
 
             // Add selection to clicked element
             element.classList.add('selected');
+
+            // Track the selected persona
+            const personaName = element.querySelector('.persona-name').textContent;
+            if (type === 'disc') {
+                selectedDisc = personaName;
+            } else if (type === 'marketing') {
+                selectedMarketing = personaName;
+            }
         }
 
         function toggleControl(element) {
