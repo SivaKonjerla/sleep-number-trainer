@@ -752,19 +752,224 @@
             gap: 20px;
         }
 
-        /* Demo badge */
-        .demo-badge {
+        /* Stakeholder Voice Feedback Button */
+        .feedback-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #2c5282;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 25px;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.4);
             z-index: 1000;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26, 54, 93, 0.5);
+        }
+
+        .feedback-btn-icon {
+            font-size: 16px;
+        }
+
+        /* Feedback Modal */
+        .feedback-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feedback-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .feedback-modal {
+            background: white;
+            border-radius: 16px;
+            width: 420px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .feedback-modal-overlay.show .feedback-modal {
+            transform: scale(1);
+        }
+
+        .feedback-modal-header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feedback-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-modal-close {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .feedback-modal-close:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .feedback-modal-body {
+            padding: 25px;
+        }
+
+        .feedback-form-group {
+            margin-bottom: 20px;
+        }
+
+        .feedback-form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .feedback-form-input,
+        .feedback-form-textarea,
+        .feedback-form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .feedback-form-input:focus,
+        .feedback-form-textarea:focus,
+        .feedback-form-select:focus {
+            outline: none;
+            border-color: #3182ce;
+        }
+
+        .feedback-form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .feedback-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .feedback-page-display {
+            background: #ebf8ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
+        .feedback-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feedback-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.4);
+        }
+
+        .feedback-modal-footer {
+            padding: 15px 25px 25px;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .feedback-dashboard-link {
+            color: #3182ce;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .feedback-dashboard-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast Notification */
+        .feedback-toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #38a169;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 3000;
+        }
+
+        .feedback-toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         /* Volume slider */
@@ -1138,10 +1343,66 @@
         </div>
     </div>
 
-    <!-- Demo Badge -->
-    <div class="demo-badge">
-        🎨 Interactive Demo
+    <!-- Stakeholder Voice Feedback Button -->
+    <button class="feedback-btn" onclick="openFeedbackModal()">
+        <span class="feedback-btn-icon">💬</span>
+        Stakeholder Voice
+    </button>
+
+    <!-- Feedback Modal -->
+    <div class="feedback-modal-overlay" id="feedbackModal">
+        <div class="feedback-modal">
+            <div class="feedback-modal-header">
+                <div class="feedback-modal-title">
+                    <span>💬</span> Share Your Feedback
+                </div>
+                <button class="feedback-modal-close" onclick="closeFeedbackModal()">&times;</button>
+            </div>
+            <div class="feedback-modal-body">
+                <div class="feedback-form-group">
+                    <label class="feedback-form-label">Your Name</label>
+                    <input type="text" class="feedback-form-input" id="feedbackName" placeholder="Enter your name">
+                </div>
+                <div class="feedback-form-group">
+                    <label class="feedback-form-label">Current Page</label>
+                    <div class="feedback-page-display" id="feedbackPage">Home</div>
+                </div>
+                <div class="feedback-form-group">
+                    <label class="feedback-form-label">Your Feedback</label>
+                    <textarea class="feedback-form-textarea" id="feedbackText" placeholder="Share your thoughts, suggestions, or concerns..."></textarea>
+                </div>
+                <div class="feedback-form-row">
+                    <div class="feedback-form-group">
+                        <label class="feedback-form-label">Category</label>
+                        <select class="feedback-form-select" id="feedbackCategory">
+                            <option value="General">General</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Enhancement">Enhancement</option>
+                            <option value="Question">Question</option>
+                        </select>
+                    </div>
+                    <div class="feedback-form-group">
+                        <label class="feedback-form-label">Priority</label>
+                        <select class="feedback-form-select" id="feedbackPriority">
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="feedback-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+            <div class="feedback-modal-footer">
+                <a href="feedback-dashboard.html" class="feedback-dashboard-link" target="_blank">
+                    📊 View All Feedback
+                </a>
+            </div>
+        </div>
     </div>
+
+    <!-- Feedback Toast -->
+    <div class="feedback-toast" id="feedbackToast">Thank you for your feedback!</div>
 
     <script>
         // Track selected personas
@@ -1223,6 +1484,133 @@
                 }
             }
         }, 1000);
+
+        // ============================================
+        // STAKEHOLDER VOICE - FEEDBACK SYSTEM
+        // ============================================
+
+        // Get current screen name
+        function getCurrentScreenName() {
+            const screens = {
+                'screen-home': 'Home',
+                'screen-persona': 'Persona Selection',
+                'screen-training': 'Training Session',
+                'screen-evaluation': 'Self Evaluation',
+                'screen-results': 'Results',
+                'screen-analytics': 'Analytics Dashboard'
+            };
+
+            for (const [id, name] of Object.entries(screens)) {
+                const screen = document.getElementById(id);
+                if (screen && screen.classList.contains('active')) {
+                    return name;
+                }
+            }
+            return 'Unknown Page';
+        }
+
+        // Open feedback modal
+        function openFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            const pageDisplay = document.getElementById('feedbackPage');
+            pageDisplay.textContent = getCurrentScreenName();
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close feedback modal
+        function closeFeedbackModal() {
+            const modal = document.getElementById('feedbackModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('feedbackModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFeedbackModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFeedbackModal();
+            }
+        });
+
+        // Generate unique ID
+        function generateId() {
+            return 'fb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Submit feedback
+        function submitFeedback() {
+            const name = document.getElementById('feedbackName').value.trim();
+            const text = document.getElementById('feedbackText').value.trim();
+            const category = document.getElementById('feedbackCategory').value;
+            const priority = document.getElementById('feedbackPriority').value;
+            const page = document.getElementById('feedbackPage').textContent;
+
+            // Validation
+            if (!name) {
+                alert('Please enter your name.');
+                document.getElementById('feedbackName').focus();
+                return;
+            }
+
+            if (!text) {
+                alert('Please enter your feedback.');
+                document.getElementById('feedbackText').focus();
+                return;
+            }
+
+            // Create feedback object
+            const feedback = {
+                id: generateId(),
+                user: name,
+                feedback: text,
+                category: category,
+                priority: priority,
+                page: page,
+                status: 'New',
+                date: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            let feedbackList = JSON.parse(localStorage.getItem('stakeholderFeedback') || '[]');
+            feedbackList.unshift(feedback);
+            localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackList));
+
+            // Remember user name for convenience
+            localStorage.setItem('stakeholderName', name);
+
+            // Reset form (keep name)
+            document.getElementById('feedbackText').value = '';
+            document.getElementById('feedbackCategory').value = 'General';
+            document.getElementById('feedbackPriority').value = 'Medium';
+
+            // Close modal and show toast
+            closeFeedbackModal();
+            showFeedbackToast();
+        }
+
+        // Show toast notification
+        function showFeedbackToast() {
+            const toast = document.getElementById('feedbackToast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Load saved name on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedName = localStorage.getItem('stakeholderName');
+            if (savedName) {
+                document.getElementById('feedbackName').value = savedName;
+            }
+        });
     </script>
 </body>
 </html>
