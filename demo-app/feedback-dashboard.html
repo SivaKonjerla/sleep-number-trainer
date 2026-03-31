@@ -4,7 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stakeholder Voice - Feedback Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sn-navy: #1B2B4B;
+            --sn-navy-light: #2A3F5F;
+            --sn-teal: #4A9E9E;
+            --sn-teal-dark: #3D8585;
+            --sn-gold: #D4A43C;
+            --sn-coral: #E85A4F;
+            --sn-white: #FFFFFF;
+            --sn-gray-light: #F5F5F5;
+            --sn-gray: #718096;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,14 +27,18 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--sn-gray-light);
             min-height: 100vh;
+        }
+
+        .serif {
+            font-family: 'Libre Baskerville', Georgia, serif;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            background: var(--sn-navy);
             padding: 20px 30px;
             color: white;
             display: flex;
@@ -33,14 +52,14 @@
             align-items: center;
             gap: 12px;
             font-size: 22px;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .header-icon {
             width: 40px;
             height: 40px;
             background: rgba(255,255,255,0.15);
-            border-radius: 10px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,11 +69,12 @@
         .header-actions {
             display: flex;
             gap: 12px;
+            align-items: center;
         }
 
         .btn {
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 50px;
             border: none;
             font-size: 14px;
             font-weight: 600;
@@ -76,7 +96,7 @@
 
         .btn-primary {
             background: white;
-            color: #1a365d;
+            color: var(--sn-navy);
         }
 
         .btn-primary:hover {
@@ -109,7 +129,7 @@
         .stat-value {
             font-size: 28px;
             font-weight: 700;
-            color: #1a365d;
+            color: var(--sn-navy);
         }
 
         .stat-label {
@@ -118,10 +138,10 @@
             margin-top: 4px;
         }
 
-        .stat-card.new .stat-value { color: #3182ce; }
-        .stat-card.working .stat-value { color: #dd6b20; }
+        .stat-card.new .stat-value { color: var(--sn-teal); }
+        .stat-card.working .stat-value { color: var(--sn-gold); }
         .stat-card.waiting .stat-value { color: #805ad5; }
-        .stat-card.completed .stat-value { color: #38a169; }
+        .stat-card.completed .stat-value { color: var(--sn-teal-dark); }
 
         /* Filters */
         .filters-bar {
@@ -159,7 +179,7 @@
 
         .filter-select:focus, .filter-input:focus {
             outline: none;
-            border-color: #3182ce;
+            border-color: var(--sn-teal);
         }
 
         .filter-input {
@@ -168,7 +188,7 @@
 
         .clear-filters {
             margin-left: auto;
-            color: #3182ce;
+            color: var(--sn-teal);
             font-size: 13px;
             cursor: pointer;
             font-weight: 600;
@@ -176,6 +196,7 @@
 
         .clear-filters:hover {
             text-decoration: underline;
+            color: var(--sn-teal-dark);
         }
 
         /* Table */
@@ -238,8 +259,8 @@
         .page-badge {
             display: inline-block;
             padding: 4px 10px;
-            background: #ebf8ff;
-            color: #2c5282;
+            background: #E8F4F4;
+            color: var(--sn-navy);
             border-radius: 4px;
             font-size: 12px;
             font-weight: 600;
@@ -283,13 +304,13 @@
 
         .status-select:focus {
             outline: none;
-            border-color: #3182ce;
+            border-color: var(--sn-teal);
         }
 
-        .status-select.new { border-color: #3182ce; color: #3182ce; }
-        .status-select.working { border-color: #dd6b20; color: #dd6b20; }
+        .status-select.new { border-color: var(--sn-teal); color: var(--sn-teal); }
+        .status-select.working { border-color: var(--sn-gold); color: var(--sn-gold); }
         .status-select.waiting { border-color: #805ad5; color: #805ad5; }
-        .status-select.completed { border-color: #38a169; color: #38a169; }
+        .status-select.completed { border-color: var(--sn-teal-dark); color: var(--sn-teal-dark); }
 
         .date-cell {
             font-size: 13px;
@@ -346,10 +367,10 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #1a365d;
+            background: var(--sn-navy);
             color: white;
             padding: 15px 25px;
-            border-radius: 8px;
+            border-radius: 50px;
             font-size: 14px;
             font-weight: 500;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
@@ -430,7 +451,7 @@
         }
 
         .login-modal-header {
-            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            background: var(--sn-navy);
             color: white;
             padding: 25px;
             text-align: center;
@@ -486,7 +507,7 @@
 
         .login-form-input:focus {
             outline: none;
-            border-color: #3182ce;
+            border-color: var(--sn-teal);
         }
 
         .login-form-input.error {
@@ -507,10 +528,10 @@
         .login-submit-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            background: var(--sn-navy);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -518,8 +539,9 @@
         }
 
         .login-submit-btn:hover {
+            background: var(--sn-navy-light);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(26, 54, 93, 0.4);
+            box-shadow: 0 4px 15px rgba(27, 43, 75, 0.4);
         }
 
         .login-cancel-btn {
@@ -549,15 +571,15 @@
             font-weight: 600;
         }
 
-        .status-readonly.new { background: #ebf8ff; color: #3182ce; }
-        .status-readonly.working { background: #feebc8; color: #dd6b20; }
+        .status-readonly.new { background: #E8F4F4; color: var(--sn-teal); }
+        .status-readonly.working { background: #FEF3DC; color: var(--sn-gold); }
         .status-readonly.waiting { background: #e9d8fd; color: #805ad5; }
-        .status-readonly.completed { background: #c6f6d5; color: #38a169; }
+        .status-readonly.completed { background: #D0E8E8; color: var(--sn-teal-dark); }
 
         /* Read-only notice */
         .readonly-notice {
-            background: #ebf8ff;
-            border: 1px solid #bee3f8;
+            background: #E8F4F4;
+            border: 1px solid #B8DADA;
             border-radius: 8px;
             padding: 12px 20px;
             margin-bottom: 20px;
@@ -567,7 +589,7 @@
         }
 
         .readonly-notice-text {
-            color: #2c5282;
+            color: var(--sn-navy);
             font-size: 14px;
             display: flex;
             align-items: center;
@@ -576,10 +598,10 @@
 
         .readonly-notice-btn {
             padding: 8px 16px;
-            background: #3182ce;
+            background: var(--sn-navy);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 50px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -587,7 +609,7 @@
         }
 
         .readonly-notice-btn:hover {
-            background: #2c5282;
+            background: var(--sn-navy-light);
         }
 
         .hidden {
