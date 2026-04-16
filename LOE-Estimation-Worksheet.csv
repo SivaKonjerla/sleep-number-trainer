@@ -5,7 +5,7 @@ Home Page,Welcome Message,"Display personalized welcome message with professiona
 Home Page,User Stats Dashboard,"Display: Total sessions completed, Average session duration, Last session date. Pull from session history data.",Backend API for stats,"Risk: Performance if many sessions. Assumption: Stats calculated server-side.",MVP,,,,,0,0
 Home Page,Start New Session Button,"CTA button to navigate to Persona Selection screen. Prominent placement, clear labeling.",None,None,MVP,,,,,0,0
 Home Page,Navigation & Layout,"Overall home page layout, responsive design, navigation structure.",None,Assumption: Web-only (no mobile app),MVP,,,,,0,0
-Persona Selection,DISC Persona Selection,"Radio/card selection for: Director, Realter, Socializer, Thinker, Random. Visual representation of each persona.",UI/UX Design,Assumption: Single selection only,MVP,,,,,0,0
+Persona Selection,DISC Persona Selection,"Radio/card selection for: Director, Relator, Socializer, Thinker, Random. Visual representation of each persona.",UI/UX Design,Assumption: Single selection only,MVP,,,,,0,0
 Persona Selection,Marketing Sub-Persona Selection,"Radio/card selection for: Skeptical, Budget Conscious, Luxury Seeker, Random. Can combine with DISC selection.",UI/UX Design,Assumption: Single selection only,MVP,,,,,0,0
 Persona Selection,Begin Training Button,"Start session with selected personas. Validate selection made, initiate session creation in backend.",Backend session API,"Risk: Need clear error handling if no selection made",MVP,,,,,0,0
 Persona Selection,Random Selection Logic,"When Random selected, system randomly assigns persona(s). Store actual persona for later reveal in evaluation.",Backend logic,Assumption: Randomization happens server-side,MVP,,,,,0,0
@@ -22,7 +22,7 @@ Session History,Last 10 Sessions List,"Display list/cards of last 10 sessions on
 Session History,Session Card Display,"Each card shows: Date/Time, Persona used (DISC + Marketing), Duration, AI summary snippet.",Backend API for summaries,Assumption: Summary generated post-session,MVP,,,,,0,0
 Session History,Session Detail View,"Click on session card to view full summary, feedback, and access replay.",Session data stored,"Risk: Data retrieval performance for old sessions",MVP,,,,,0,0
 Self-Evaluation,Evaluation Form UI,"Form with conditional questions. Clean, easy-to-use interface. Submit and Cancel buttons.",Training Session complete,None,MVP,,,,,0,0
-Self-Evaluation,Random Persona Question,"If Random was selected: 'What DISC persona did you interact with?' - Multiple choice (Director/Realter/Socializer/Thinker).",Persona selection data,None,MVP,,,,,0,0
+Self-Evaluation,Random Persona Question,"If Random was selected: 'What DISC persona did you interact with?' - Multiple choice (Director/Relator/Socializer/Thinker).",Persona selection data,None,MVP,,,,,0,0
 Self-Evaluation,Standard Questions,"Two open-text questions: 'What was the toughest part?' and 'What could you have done better?'",None,Assumption: Free-text responses (no validation),MVP,,,,,0,0
 Self-Evaluation,Form Submission & Storage,"Store self-evaluation responses linked to session. Handle submit and cancel actions.",Backend API,None,MVP,,,,,0,0
 Results & Feedback,Session Duration Display,"Show how long the user was in the session (actual time, not max 15 min).",Session data,None,MVP,,,,,0,0
@@ -45,7 +45,7 @@ Analytics (Admin),Admin Authentication & Access Control,"Restrict analytics dash
 Analytics (Admin),Usage Metrics - Total Users,"Track and display total registered users and active users (used in last 30 days).",User database,Assumption: Active defined as 30-day window,MVP,,,,,0,0
 Analytics (Admin),Usage Metrics - Session Counts,"Track total sessions started, total sessions completed, calculate completion rate percentage.",Session database,None,MVP,,,,,0,0
 Analytics (Admin),Usage Metrics - Avg Session Duration,"Calculate and display average session duration across all completed sessions.",Session database,Assumption: Only completed sessions count,MVP,,,,,0,0
-Analytics (Admin),Persona Analytics - DISC Distribution,"Chart showing session distribution by DISC persona type (Director/Realter/Socializer/Thinker/Random).",Session database,None,MVP,,,,,0,0
+Analytics (Admin),Persona Analytics - DISC Distribution,"Chart showing session distribution by DISC persona type (Director/Relator/Socializer/Thinker/Random).",Session database,None,MVP,,,,,0,0
 Analytics (Admin),Persona Analytics - Marketing Distribution,"Chart showing session distribution by Marketing persona (Skeptical/Budget Conscious/Luxury Seeker/Random).",Session database,None,MVP,,,,,0,0
 Analytics (Admin),Persona Analytics - Combo Heatmap,"Heatmap or matrix showing which DISC + Marketing combinations are most frequently selected.",Session database,Assumption: Visual heatmap or table format,MVP,,,,,0,0
 Analytics (Admin),Performance Trends - Self-Eval Rate,"Track and display percentage of sessions where self-evaluation was submitted vs skipped.",Evaluation database,None,MVP,,,,,0,0

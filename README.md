@@ -29,7 +29,7 @@ An AI-powered sales training application for Sleep Number sales professionals to
 | Persona | Description |
 |---------|-------------|
 | Director | Decisive, direct, results-oriented |
-| Realter | Supportive, patient, team-focused |
+| Relator | Supportive, patient, team-focused |
 | Socializer | Enthusiastic, optimistic, social |
 | Thinker | Analytical, precise, detail-oriented |
 | Random | System randomly assigns |
