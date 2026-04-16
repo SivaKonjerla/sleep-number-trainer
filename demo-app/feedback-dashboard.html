@@ -775,6 +775,15 @@
         let feedbackData = [];
         let currentSort = { column: 'date', direction: 'desc' };
         let isAdmin = false;
+        let isSaving = false;
+
+        // ===========================================
+        // CONFIGURATION - npoint.io shared storage
+        // Create your bin at: https://www.npoint.io/
+        // Paste your bin ID below (the part after /api/bin/)
+        // ===========================================
+        const NPOINT_BIN_ID = '8cb7cb2a043fa5380dd8';
+        const API_URL = `https://api.npoint.io/${NPOINT_BIN_ID}`;
 
         // Admin credentials (simple demo auth)
         const ADMIN_USERNAME = 'Admin';
@@ -867,19 +876,46 @@
             }
         });
 
-        // Load feedback from localStorage
-        function loadFeedback() {
-            const stored = localStorage.getItem('stakeholderFeedback');
-            feedbackData = stored ? JSON.parse(stored) : [];
+        // Load feedback from shared API
+        async function loadFeedback() {
+            try {
+                showToast('Loading feedback...');
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to load');
+                const data = await response.json();
+                feedbackData = Array.isArray(data) ? data : [];
+                showToast('Feedback loaded');
+            } catch (error) {
+                console.error('Error loading feedback:', error);
+                // Fallback to localStorage if API fails
+                const stored = localStorage.getItem('stakeholderFeedback');
+                feedbackData = stored ? JSON.parse(stored) : [];
+                showToast('Using local data (API unavailable)');
+            }
             checkAuthState();
             updateStats();
             populatePageFilter();
             renderTable();
         }
 
-        // Save feedback to localStorage
-        function saveFeedback() {
-            localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackData));
+        // Save feedback to shared API
+        async function saveFeedback() {
+            if (isSaving) return;
+            isSaving = true;
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedbackData)
+                });
+                if (!response.ok) throw new Error('Failed to save');
+                // Also save to localStorage as backup
+                localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackData));
+            } catch (error) {
+                console.error('Error saving feedback:', error);
+                showToast('Error saving - check console');
+            }
+            isSaving = false;
         }
 
         // Update statistics

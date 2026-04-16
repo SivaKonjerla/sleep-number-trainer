@@ -1046,6 +1046,74 @@
             opacity: 1;
         }
 
+        /* Cancel Session Modal */
+        .cancel-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2500;
+        }
+
+        .cancel-modal-overlay.show {
+            display: flex;
+        }
+
+        .cancel-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 40px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .cancel-modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .cancel-modal-title {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 22px;
+            color: var(--sn-navy);
+            margin-bottom: 12px;
+        }
+
+        .cancel-modal-text {
+            font-size: 15px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .cancel-modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cancel-modal-buttons .btn {
+            width: 100%;
+        }
+
         /* Training Program Cards */
         .program-section {
             flex: 1;
@@ -1668,13 +1736,13 @@
                 <div class="control-card">
                     <div class="control-title">Session Controls</div>
                     <div class="control-buttons">
-                        <button class="control-btn" onclick="toggleControl(this)">
-                            <span class="control-btn-icon">⏸️</span>
-                            Pause
+                        <button class="control-btn" onclick="openCancelModal()">
+                            <span class="control-btn-icon">✕</span>
+                            Cancel Session
                         </button>
                         <button class="control-btn danger" onclick="showScreen('evaluation')">
-                            <span class="control-btn-icon">⏹️</span>
-                            End
+                            <span class="control-btn-icon">✓</span>
+                            End Session
                         </button>
                     </div>
                 </div>
@@ -1905,10 +1973,32 @@
         </div>
     </div>
 
+    <!-- Cancel Session Confirmation Modal -->
+    <div class="cancel-modal-overlay" id="cancelModal">
+        <div class="cancel-modal">
+            <div class="cancel-modal-icon">⚠️</div>
+            <div class="cancel-modal-title">Cancel this session?</div>
+            <div class="cancel-modal-text">
+                You won't receive AI coaching feedback or a session summary.
+            </div>
+            <div class="cancel-modal-buttons">
+                <button class="btn btn-primary" onclick="closeCancelModal()">Continue Training</button>
+                <button class="btn btn-secondary" onclick="confirmCancelSession()">Cancel Anyway</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Feedback Toast -->
     <div class="feedback-toast" id="feedbackToast">Thank you for your feedback!</div>
 
     <script>
+        // ===========================================
+        // CONFIGURATION - npoint.io shared storage
+        // Must match the same bin ID as feedback-dashboard.html
+        // ===========================================
+        const NPOINT_BIN_ID = '8cb7cb2a043fa5380dd8';
+        const API_URL = `https://api.npoint.io/${NPOINT_BIN_ID}`;
+
         // Track selected personas
         let selectedDisc = 'Random';
         let selectedMarketing = 'Random';
@@ -2049,7 +2139,7 @@
         }
 
         // Submit feedback
-        function submitFeedback() {
+        async function submitFeedback() {
             const name = document.getElementById('feedbackName').value.trim();
             const text = document.getElementById('feedbackText').value.trim();
             const category = document.getElementById('feedbackCategory').value;
@@ -2081,10 +2171,35 @@
                 date: new Date().toISOString()
             };
 
-            // Save to localStorage
-            let feedbackList = JSON.parse(localStorage.getItem('stakeholderFeedback') || '[]');
-            feedbackList.unshift(feedback);
-            localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackList));
+            // Save to shared API
+            try {
+                // First fetch existing feedback
+                const response = await fetch(API_URL);
+                let feedbackList = [];
+                if (response.ok) {
+                    const data = await response.json();
+                    feedbackList = Array.isArray(data) ? data : [];
+                }
+
+                // Add new feedback at the beginning
+                feedbackList.unshift(feedback);
+
+                // Save to API
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedbackList)
+                });
+
+                // Also save to localStorage as backup
+                localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackList));
+            } catch (error) {
+                console.error('Error saving feedback:', error);
+                // Fallback to localStorage only
+                let feedbackList = JSON.parse(localStorage.getItem('stakeholderFeedback') || '[]');
+                feedbackList.unshift(feedback);
+                localStorage.setItem('stakeholderFeedback', JSON.stringify(feedbackList));
+            }
 
             // Remember user name for convenience
             localStorage.setItem('stakeholderName', name);
@@ -2113,6 +2228,30 @@
             const savedName = localStorage.getItem('stakeholderName');
             if (savedName) {
                 document.getElementById('feedbackName').value = savedName;
+            }
+        });
+
+        // ============================================
+        // CANCEL SESSION MODAL
+        // ============================================
+
+        function openCancelModal() {
+            document.getElementById('cancelModal').classList.add('show');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').classList.remove('show');
+        }
+
+        function confirmCancelSession() {
+            closeCancelModal();
+            showScreen('home');
+        }
+
+        // Close cancel modal on overlay click
+        document.getElementById('cancelModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCancelModal();
             }
         });
     </script>
