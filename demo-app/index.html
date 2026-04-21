@@ -1726,7 +1726,7 @@
             <div class="avatar-section">
                 <div class="timer" id="timer">14:32</div>
                 <div class="avatar-placeholder">
-                    <span class="avatar-emoji">👩‍💼</span>
+                    <img id="avatar-image" src="avatar-1.png" alt="Customer Avatar">
                 </div>
                 <div class="avatar-name">Sarah Mitchell</div>
                 <div class="avatar-speaking" id="persona-display">Customer • Random + Random</div>
@@ -2023,10 +2023,19 @@
                 document.querySelector('.nav-link:nth-child(2)').classList.add('active');
             }
 
-            // Update persona display when entering training screen
+            // Update persona display and avatar when entering training screen
             if (screenId === 'training') {
                 document.getElementById('persona-display').textContent =
                     'Customer • ' + selectedDisc + ' + ' + selectedMarketing;
+
+                // Randomly select avatar image and matching name
+                const avatars = [
+                    { image: 'avatar-1.png', name: 'Sarah Mitchell' },
+                    { image: 'avatar-2.png', name: 'Marcus Johnson' }
+                ];
+                const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+                document.getElementById('avatar-image').src = randomAvatar.image;
+                document.querySelector('.avatar-name').textContent = randomAvatar.name;
             }
         }
 
